@@ -1,5 +1,8 @@
 package decisionTree;
-import parser.*;
+
+import parser.CSVParser;
+import parser.ParserColumn;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
