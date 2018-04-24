@@ -92,6 +92,7 @@ class DataAnalysis {
         for (Double i : array)
             System.out.println("Valor: " + i);
 */
+//        System.out.println("Line: \t" + listsOfLines[0].get(2));
         return array;
     }
 
@@ -148,7 +149,7 @@ class DataAnalysis {
     }
 
 
-    // lê linha a linha e passa cada linha para uma lista
+    /* lê linha a linha e passa cada linha para uma lista */
     private static LinkedList<String>[] readLines(LinkedList<ParserColumn> table) {
         @SuppressWarnings("unchecked")
         LinkedList<String>[] listsOfLines = new LinkedList[numberOfLines + 1];
@@ -178,14 +179,15 @@ class DataAnalysis {
     }
 
 
-    // lista com os nós filhos
-    private static LinkedList<String> numberOfDifferentAttributes(int columnID) {
+    // lista com os nós classificações possíveis
+    static LinkedList<String> numberOfDifferentAttributes(int columnID) {
         if (columnID < 1) {
             System.out.println("Coluna errada quase de certeza");
             return null;
         } else {
             LinkedList<String> temp = new LinkedList<>();
-            for (int i = 1; i <= listsOfLines.length; i++) {
+            System.out.println("Size: \t" + listsOfLines.length);
+            for (int i = 1; i < listsOfLines.length; i++) {
                 String value = listsOfLines[i].get(columnID);
                 if (!temp.contains(value)) {
                     temp.addFirst(value);
@@ -193,5 +195,22 @@ class DataAnalysis {
             }
             return temp;
         }
+    }
+
+
+    static int attributeChoice(int[] array) {
+        int value = -1;
+        for (int i = 1; i < numberOfColumns && value == -1; i++) {
+            if (array[i] < Integer.MAX_VALUE) {
+                value = array[i];
+                array[i] = Integer.MAX_VALUE;
+            }
+        }
+        return value;
+    }
+
+
+    static String nameOfChoice(int id) {
+        return listsOfLines[0].get(id);
     }
 }

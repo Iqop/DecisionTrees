@@ -9,6 +9,8 @@ import java.util.LinkedList;
 
 public class DecisionTree {
 
+    static int[] sortedEntropy;
+
     public static void main(String[] args) {
         System.out.printf("Performing parsing of %s to a data structure\n\n", args[0]);
         LinkedList<ParserColumn> table;
@@ -21,11 +23,10 @@ public class DecisionTree {
             return;
         }
 
-
 //		System.out.println("Size: \t" + table.size());
 
 
-        int[] entropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
+        sortedEntropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
 
 //		System.out.println("\n\n" + table.toString());
         System.out.println("\nFile successfully loaded");
@@ -35,7 +36,18 @@ public class DecisionTree {
         buildDecisionTree(table);
     }
 
-    static void buildDecisionTree(LinkedList<ParserColumn> table) {
-
+    private static void buildDecisionTree(LinkedList<ParserColumn> table) {
+        int idOfBest = DataAnalysis.attributeChoice(sortedEntropy);
+        String nameOfBest = DataAnalysis.nameOfChoice(idOfBest);
+//        System.out.println("Nome: \t" + nameOfBest);
+        LinkedList<String> children = DataAnalysis.numberOfDifferentAttributes(idOfBest);
+//        System.out.println("Tamanho: \t" + children.size());
+        if (children == null) {
+            System.out.println("Some error occurred");
+        } else {
+            int numberOfChildren = children.size();
+            Tree.Node root = new Tree.Node(nameOfBest, null, null, 0);
+        }
     }
+
 }
