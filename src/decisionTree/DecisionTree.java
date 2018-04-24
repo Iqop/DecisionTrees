@@ -21,9 +21,7 @@ public class DecisionTree {
             return;
         }
 
-
-//		System.out.println("Size: \t" + table.size());
-
+        System.out.println(table.toString());
 
         int[] entropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
 
@@ -35,7 +33,7 @@ public class DecisionTree {
         buildDecisionTree(table);
     }
 
-    static void buildDecisionTree(LinkedList<ParserColumn> table) {
+    private static void buildDecisionTree(LinkedList<ParserColumn> table) {
 
     }
 }
