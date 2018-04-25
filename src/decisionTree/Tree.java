@@ -3,28 +3,64 @@ package decisionTree;
 
 import java.util.LinkedList;
 
-public class Tree {
-    static class Node {
-        String name;
-        Node father;
-        LinkedList<String> next;
-        int depth;
+class Tree {
 
-        Node(String name, Node dad, LinkedList<String> children, int depth) {
+    static class Arc {
+        String name;
+        Node origin;
+        Node end;
+
+        Arc(String name, Node start, Node end) {
             this.name = name;
-            this.father = dad;
-            this.next = children;
-            this.depth = depth;
+            this.origin = start;
+            this.end = end;
+        }
+
+        public Node getArcExtreme() {
+            return end;
         }
     }
 
-    Node root;
-    int size;
+    static class Node {
+        String nameOfAttribute;
+        String classification;
+        Node father;
+        LinkedList<Arc> children;
+        int depth;
 
-    Tree() {
-        root = new Node(null,null,null,0);
-        size = 0;
+        Node(String nameOfAttribute, String classification, Node dad, int depth, int column) {
+            this.nameOfAttribute = nameOfAttribute;
+            this.classification = classification;
+            this.father = dad;
+            this.children = new LinkedList<>();
+            this.depth = depth;
+
+            LinkedList<String> l = DataAnalysis.numberOfDifferentOptions(column);
+            if (l != null) {
+                for (String s : l) {
+                    Arc a = new Arc(s, null, null);
+                    children.addLast(a);
+                }
+            } else {
+                children = null;
+            }
+        }
+
+        public String getNameOfAttribute() {
+            return nameOfAttribute;
+        }
+
+        public String getClassification() {
+            return classification;
+        }
+
+        public LinkedList<Arc> getChildren() {
+            return children;
+        }
+
+        public void addChild(Arc arc) {
+            children.addLast(arc);
+        }
     }
-
 }
 

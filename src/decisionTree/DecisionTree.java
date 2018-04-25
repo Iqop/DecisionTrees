@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public class DecisionTree {
 
-    static int[] sortedEntropy;
+    private static int[] sortedEntropy;
 
     public static void main(String[] args) {
         System.out.printf("Performing parsing of %s to a data structure\n\n", args[0]);
@@ -28,24 +28,21 @@ public class DecisionTree {
         sortedEntropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
 
 
-
         System.out.println("Building the decision tree");
 
-        buildDecisionTree(table);
+        buildDecisionTree();
     }
 
-    private static void buildDecisionTree(LinkedList<ParserLine> table) {
+    private static void buildDecisionTree() {
         int idOfBest = DataAnalysis.attributeChoice(sortedEntropy);
-        String nameOfBest = DataAnalysis.nameOfChoice(idOfBest);
-//        System.out.println("Nome: \t" + nameOfBest);
-        LinkedList<String> children = DataAnalysis.numberOfDifferentAttributes(idOfBest);
-//        System.out.println("Tamanho: \t" + children.size());
-        if (children == null) {
-            System.out.println("Some error occurred");
-        } else {
-            int numberOfChildren = children.size();
-            Tree.Node root = new Tree.Node(nameOfBest, null, null, 0);
+        Tree.Node root = new Tree.Node(DataAnalysis.nameOfChoice(idOfBest), null, null, 0, idOfBest);
+        System.out.println("Root: \t" + root.nameOfAttribute);
+        for (Tree.Arc a : root.children) {
+            System.out.println(a.name);
+
+            // fazer aqui análise
+
         }
     }
-
 }
+

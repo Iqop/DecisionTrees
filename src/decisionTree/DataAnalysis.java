@@ -1,19 +1,21 @@
 package decisionTree;
 
-import static utils.TableUtils.*;
 import parser.ParserLine;
 
 import java.util.LinkedList;
 
+import static utils.TableUtils.getClassDiferentColumnValues;
+
 class DataAnalysis {
 
-    static int numberOfColumns;
+    private static int numberOfColumns;
     private static int numberOfLines;
     private static LinkedList<String>[] listsOfLines;
-    private static LinkedList<Character> unwanted = new LinkedList<>();
+//    private static LinkedList<Character> unwanted = new LinkedList<>();
     private static LinkedList<String> optionsLastColumn = new LinkedList<>();
 
-
+    /* caracteres não pretendidos */
+/*
     private static void restrictions() {
         unwanted.addFirst('[');
         unwanted.addFirst(']');
@@ -21,11 +23,10 @@ class DataAnalysis {
         unwanted.addFirst(',');
         unwanted.addFirst('\n');
     }
-
+*/
 
     // cálculo de entropia
     static double[] entropy(LinkedList<ParserLine> table) {
-        restrictions();                                     // caracteres não pretendidos
         numberOfColumns = 0;                                // num de atributos
         numberOfLines = table.size() - 1;
 
@@ -35,6 +36,7 @@ class DataAnalysis {
             System.out.println("Teste: \t" + arrayOfLists[i].getFirst());
         }
 */
+
         System.out.println("Options: \t" + optionsLastColumn.size());
         System.out.println("Number of columns: \t" + numberOfColumns);
 
@@ -99,7 +101,6 @@ class DataAnalysis {
 
 
     // ordenação ascendente do vetor por entropia
-
     static int[] sortEntropy(double[] array) {
         int[] idSorted = new int[array.length];
 
@@ -152,52 +153,29 @@ class DataAnalysis {
 
 
     /* lê linha a linha e passa cada linha para uma lista */
-    /*
-     * Tens uma funcao em parserColumn que permite ir buscar a linha toda,
-     * a funcao é getAll(), e usas desta maneira.
-     * table.get(LineIndex).getAll() -> retorna uma LinkedList de strings
-     *
-     * LÊ ISTO PLS
-     */
     private static LinkedList<String>[] readLines(LinkedList<ParserLine> table) {
+        @SuppressWarnings("unchecked")
         LinkedList<String>[] listsOfLines = new LinkedList[numberOfLines + 1];
 
-
-        for (int i=0;i<=numberOfLines;i++){
-
+        for (int i = 0; i <= numberOfLines; i++) {
             listsOfLines[i] = new LinkedList<>(table.get(i).getAll());
-            // Fiz isto para ficar coincidente com a tua parte, adicionas um caracter
-            // que pode arruinar a comparação
-            for(int j=0;j<listsOfLines[i].size();j++){
-                listsOfLines[i].add(j,"\u0000"+listsOfLines[i].remove(j));
+            System.out.println("Line: \t" + listsOfLines[i]);
+            for (int j = 0; j < listsOfLines[i].size(); j++) {
+                listsOfLines[i].add(j, "\u0000" + listsOfLines[i].remove(j) + "\u0000");
             }
-
         }
-
-        //Exemplificação do que disse em cima
-
-        System.out.println("Teste de comparação: "+(boolean)(listsOfLines[0].get(0).compareTo("ID")==0));
-
-
 
         optionsLastColumn = getClassDiferentColumnValues(table);
-        /*
-            Mesma cena de cima
-         */
-        for(int i=0;i<optionsLastColumn.size();i++){
-            optionsLastColumn.add(i,"\u0000"+optionsLastColumn.remove(i));
+        for (int i = 0; i < optionsLastColumn.size(); i++) {
+            optionsLastColumn.add(i, "\u0000" + optionsLastColumn.remove(i) + "\u0000");
         }
-        numberOfColumns= listsOfLines[1].size();
-
-        /*
-            No entanto a remoção desse caracter causa a entropy nao retornar resultado
-         */
+        numberOfColumns = listsOfLines[1].size();
         return listsOfLines;
     }
 
 
-    // lista com os nós classificações possíveis
-    static LinkedList<String> numberOfDifferentAttributes(int columnID) {
+    /* lista com as classificações possíveis de um atributo */
+    static LinkedList<String> numberOfDifferentOptions(int columnID) {
         if (columnID < 1) {
             System.out.println("Coluna errada quase de certeza");
             return null;
@@ -215,6 +193,7 @@ class DataAnalysis {
     }
 
 
+    /* escolha do melhor atributo */
     static int attributeChoice(int[] array) {
         int value = -1;
         for (int i = 1; i < numberOfColumns && value == -1; i++) {
