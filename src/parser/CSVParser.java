@@ -1,19 +1,18 @@
 package parser;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.PasswordAuthentication;
-import java.util.DoubleSummaryStatistics;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Scanner;
+import static utils.TableUtils.*;
 
 public class CSVParser {
 
-    public static LinkedList<ParserColumn> parseData(File f) throws FileNotFoundException{
+    public static LinkedList<ParserLine> parseData(File f) throws FileNotFoundException{
         Scanner scan = new Scanner(f);
-        LinkedList<ParserColumn> table = new LinkedList<>();
+        LinkedList<ParserLine> table = new LinkedList<>();
         while(scan.hasNext()){
-            table.addLast(new ParserColumn(scan.nextLine()));
+            table.addLast(new ParserLine(scan.nextLine()));
         }
         scan.close();
 
@@ -43,12 +42,12 @@ public class CSVParser {
     }
 
 
-    private static String getFromPosition(LinkedList<ParserColumn> table,int line,int column){
+    private static String getFromPosition(LinkedList<ParserLine> table, int line, int column){
         return table.get(line).get(column);
     }
 
 
-    private static void setToPosition(LinkedList<ParserColumn> table,int line,int column,String value){
+    private static void setToPosition(LinkedList<ParserLine> table, int line, int column, String value){
         table.get(line).set(column,value);
     }
 
@@ -83,48 +82,4 @@ public class CSVParser {
         return max;
     }
 
-
-
-    public static LinkedList<Integer> getColumnsThatContainsNumerals(LinkedList<ParserColumn> table){
-
-
-        LinkedList<Integer> columnsWithNumerals = new LinkedList<>();
-
-        boolean foundNumberColumn=false;
-
-        ParserColumn e = table.get(1);
-        LinkedList<String> info = e.getAll();
-
-        for (int i=1;i<info.size();i++) {
-            String s = info.get(i);
-            try {
-                Double.parseDouble(s);
-                foundNumberColumn=true;
-            } catch (NumberFormatException nfe) {
-                foundNumberColumn=false;
-            }finally{
-                if (foundNumberColumn){
-                    columnsWithNumerals.add(i);
-                    foundNumberColumn=false;
-                }
-            }
-        }
-        return columnsWithNumerals;
-    }
-
-    public static LinkedList<String> getColumn(LinkedList<ParserColumn> table,int index){
-        LinkedList<String> column = new LinkedList<>();
-        for(ParserColumn p : table){
-            column.addLast(p.get(index));
-        }
-        return column;
-    }
-
-    public static int getClassColumnPosition(LinkedList<ParserColumn> table){
-        return table.get(0).size() -1;
-    }
-
-    public static String getClassColumnName(LinkedList<ParserColumn> table){
-        return table.get(0).get(getClassColumnPosition(table));
-    }
 }

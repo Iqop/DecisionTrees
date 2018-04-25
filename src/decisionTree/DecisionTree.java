@@ -1,7 +1,7 @@
 package decisionTree;
 
 import parser.CSVParser;
-import parser.ParserColumn;
+import parser.ParserLine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,7 +13,7 @@ public class DecisionTree {
 
     public static void main(String[] args) {
         System.out.printf("Performing parsing of %s to a data structure\n\n", args[0]);
-        LinkedList<ParserColumn> table;
+        LinkedList<ParserLine> table;
 
         try {
             File csvFile = new File(args[0]);
@@ -22,21 +22,19 @@ public class DecisionTree {
             System.out.println("ERROR: File not found");
             return;
         }
-
-//		System.out.println("Size: \t" + table.size());
+        System.out.println("File successfully loaded");
 
 
         sortedEntropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
 
-//		System.out.println("\n\n" + table.toString());
-        System.out.println("\nFile successfully loaded");
+
 
         System.out.println("Building the decision tree");
 
         buildDecisionTree(table);
     }
 
-    private static void buildDecisionTree(LinkedList<ParserColumn> table) {
+    private static void buildDecisionTree(LinkedList<ParserLine> table) {
         int idOfBest = DataAnalysis.attributeChoice(sortedEntropy);
         String nameOfBest = DataAnalysis.nameOfChoice(idOfBest);
 //        System.out.println("Nome: \t" + nameOfBest);

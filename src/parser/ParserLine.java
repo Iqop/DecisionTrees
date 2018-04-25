@@ -2,11 +2,11 @@ package parser;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-public class ParserColumn {
+public class ParserLine {
 
 	private LinkedList<String> data;
 
-	ParserColumn(String data){
+	ParserLine(String data){
 		Scanner dataScan = new Scanner(data);
 		this.data =new LinkedList<>();
 		dataScan.useDelimiter(",");
@@ -17,15 +17,15 @@ public class ParserColumn {
 		dataScan.close();
 	}
 
-	String get(int i){
+	public String get(int i){
 		return data.get(i);
 	}
 
-	void set(int i,String value){
+	public void set(int i,String value){
 		data.set(i,value);
 	}
 
-	LinkedList<String> getAll(){
+	public LinkedList<String> getAll(){
 		return data;
 	}
 

@@ -1,6 +1,7 @@
 package decisionTree;
 
-import parser.ParserColumn;
+import static utils.TableUtils.*;
+import parser.ParserLine;
 
 import java.util.LinkedList;
 
@@ -23,7 +24,7 @@ class DataAnalysis {
 
 
     // cálculo de entropia
-    static double[] entropy(LinkedList<ParserColumn> table) {
+    static double[] entropy(LinkedList<ParserLine> table) {
         restrictions();                                     // caracteres não pretendidos
         numberOfColumns = 0;                                // num de atributos
         numberOfLines = table.size() - 1;
@@ -98,6 +99,7 @@ class DataAnalysis {
 
 
     // ordenação ascendente do vetor por entropia
+
     static int[] sortEntropy(double[] array) {
         int[] idSorted = new int[array.length];
 
@@ -150,31 +152,46 @@ class DataAnalysis {
 
 
     /* lê linha a linha e passa cada linha para uma lista */
-    private static LinkedList<String>[] readLines(LinkedList<ParserColumn> table) {
-        @SuppressWarnings("unchecked")
+    /*
+     * Tens uma funcao em parserColumn que permite ir buscar a linha toda,
+     * a funcao é getAll(), e usas desta maneira.
+     * table.get(LineIndex).getAll() -> retorna uma LinkedList de strings
+     *
+     * LÊ ISTO PLS
+     */
+    private static LinkedList<String>[] readLines(LinkedList<ParserLine> table) {
         LinkedList<String>[] listsOfLines = new LinkedList[numberOfLines + 1];
-        String valueLastColumn = "\0";
-        for (int i = 0; i <= numberOfLines; i++) {
-            listsOfLines[i] = new LinkedList<>();
-            String line = table.get(i).toString();
-//            System.out.println("Line: " + line);
-            for (int j = 0; j < line.length(); j++) {
-                if (line.charAt(j) == ',' || line.charAt(j) == ']') {
-                    if (i == 0) {
-                        numberOfColumns++;
-                    }
-                    if (i > 0 && line.charAt(j) == ']' && !optionsLastColumn.contains(valueLastColumn)) {
-                        // título da ultima coluna nao entra
-                        optionsLastColumn.addLast(valueLastColumn);
-                    }
-                    listsOfLines[i].addLast(valueLastColumn);
-//                    System.out.println("Value: \t" + valueLastColumn);
-                    valueLastColumn = "\0";
-                } else if (!unwanted.contains(line.charAt(j))) {
-                    valueLastColumn += line.charAt(j);
-                }
+
+
+        for (int i=0;i<=numberOfLines;i++){
+
+            listsOfLines[i] = new LinkedList<>(table.get(i).getAll());
+            // Fiz isto para ficar coincidente com a tua parte, adicionas um caracter
+            // que pode arruinar a comparação
+            for(int j=0;j<listsOfLines[i].size();j++){
+                listsOfLines[i].add(j,"\u0000"+listsOfLines[i].remove(j));
             }
+
         }
+
+        //Exemplificação do que disse em cima
+
+        System.out.println("Teste de comparação: "+(boolean)(listsOfLines[0].get(0).compareTo("ID")==0));
+
+
+
+        optionsLastColumn = getClassDiferentColumnValues(table);
+        /*
+            Mesma cena de cima
+         */
+        for(int i=0;i<optionsLastColumn.size();i++){
+            optionsLastColumn.add(i,"\u0000"+optionsLastColumn.remove(i));
+        }
+        numberOfColumns= listsOfLines[1].size();
+
+        /*
+            No entanto a remoção desse caracter causa a entropy nao retornar resultado
+         */
         return listsOfLines;
     }
 
