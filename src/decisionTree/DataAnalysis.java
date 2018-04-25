@@ -6,10 +6,12 @@ import java.util.LinkedList;
 
 class DataAnalysis {
 
-    private static int numberOfColumns;
+    static int numberOfColumns;
     private static int numberOfLines;
+    private static LinkedList<String>[] listsOfLines;
     private static LinkedList<Character> unwanted = new LinkedList<>();
     private static LinkedList<String> optionsLastColumn = new LinkedList<>();
+
 
     private static void restrictions() {
         unwanted.addFirst('[');
@@ -19,12 +21,14 @@ class DataAnalysis {
         unwanted.addFirst('\n');
     }
 
+
+    // cálculo de entropia
     static double[] entropy(LinkedList<ParserColumn> table) {
         restrictions();                                     // caracteres não pretendidos
         numberOfColumns = 0;                                // num de atributos
         numberOfLines = table.size() - 1;
 
-        LinkedList<String>[] listsOfLines = readLines(table);
+        listsOfLines = readLines(table);
 /*
         for (int i=0; i<=numberOflines; i++) {
             System.out.println("Teste: \t" + arrayOfLists[i].getFirst());
@@ -88,9 +92,12 @@ class DataAnalysis {
         for (Double i : array)
             System.out.println("Valor: " + i);
 */
+//        System.out.println("Line: \t" + listsOfLines[0].get(2));
         return array;
     }
 
+
+    // ordenação ascendente do vetor por entropia
     static int[] sortEntropy(double[] array) {
         int[] idSorted = new int[array.length];
 
@@ -121,6 +128,7 @@ class DataAnalysis {
         return idSorted;
     }
 
+
     // conta o numero de vez que aparecem as opcoes da ultima coluna
     private static int[] lastColumnCount(LinkedList<String>[] listsOfLines) {
         String valueLastColumn;
@@ -140,6 +148,8 @@ class DataAnalysis {
         return counts;
     }
 
+
+    /* lê linha a linha e passa cada linha para uma lista */
     private static LinkedList<String>[] readLines(LinkedList<ParserColumn> table) {
         @SuppressWarnings("unchecked")
         LinkedList<String>[] listsOfLines = new LinkedList[numberOfLines + 1];
@@ -168,4 +178,39 @@ class DataAnalysis {
         return listsOfLines;
     }
 
+
+    // lista com os nós classificações possíveis
+    static LinkedList<String> numberOfDifferentAttributes(int columnID) {
+        if (columnID < 1) {
+            System.out.println("Coluna errada quase de certeza");
+            return null;
+        } else {
+            LinkedList<String> temp = new LinkedList<>();
+            System.out.println("Size: \t" + listsOfLines.length);
+            for (int i = 1; i < listsOfLines.length; i++) {
+                String value = listsOfLines[i].get(columnID);
+                if (!temp.contains(value)) {
+                    temp.addFirst(value);
+                }
+            }
+            return temp;
+        }
+    }
+
+
+    static int attributeChoice(int[] array) {
+        int value = -1;
+        for (int i = 1; i < numberOfColumns && value == -1; i++) {
+            if (array[i] < Integer.MAX_VALUE) {
+                value = array[i];
+                array[i] = Integer.MAX_VALUE;
+            }
+        }
+        return value;
+    }
+
+
+    static String nameOfChoice(int id) {
+        return listsOfLines[0].get(id);
+    }
 }
