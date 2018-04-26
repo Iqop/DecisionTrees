@@ -22,7 +22,7 @@ public class TableUtils {
                 Double.parseDouble(s);
                 foundNumberColumn=true;
             } catch (NumberFormatException nfe) {
-                foundNumberColumn=false;
+                //nothing happens
             }finally{
                 if (foundNumberColumn){
                     columnsWithNumerals.add(i);
@@ -50,18 +50,45 @@ public class TableUtils {
         return table.get(0).get(index);
     }
 
-
-    public static LinkedList<String> getClassUniqueValuesInColumn(LinkedList<ParserLine> table){
-        Set<String> toRet = new HashSet<>(getColumn(table,getClassColumnPosition(table)));
-        toRet.remove(getColumnName(table,getClassColumnPosition(table)));
-
-        return new LinkedList<>(toRet);
+    public static int getColumnFromName(LinkedList<ParserLine> table,String name){
+        for(int i=0;i<table.get(0).size();i++){
+            if (table.get(0).get(i).equals(name)){
+                return i;
+            }
+        }
+        return -1;
     }
 
+    public static LinkedList<String> getClassUniqueValuesInColumn(LinkedList<ParserLine> table) {
+        return getUniqueValuesInColumn(table, getClassColumnPosition(table));
+    }
     public static LinkedList<String> getUniqueValuesInColumn(LinkedList<ParserLine> table, int index){
         Set<String> toRet = new HashSet<>(getColumn(table,index));
         toRet.remove(getColumnName(table,index));
         return new LinkedList<>(toRet);
+    }
+
+    public LinkedList<ParserLine> cutTableBasedOnRestriction(LinkedList<ParserLine> table,String atribute,String atributeValue){
+        LinkedList<ParserLine> newTable = new LinkedList<>(table);
+        int colNumber = getColumnFromName(table,atribute);
+        for(int i=1;i<table.size();i++){
+            if (!table.get(i).get(colNumber).equals(atributeValue)){
+                ParserLine parserLine = table.get(i);
+                newTable.remove(parserLine);
+            }
+        }
+        return newTable;
+    }
+
+    public LinkedList<ParserLine> cutTableBasedOnRestriction(LinkedList<ParserLine> table,int atributeIndex,String atributeValue){
+        LinkedList<ParserLine> newTable = new LinkedList<>(table);
+        for(int i=1;i<table.size();i++){
+            if (!table.get(i).get(atributeIndex).equals(atributeValue)){
+                ParserLine parserLine = table.get(i);
+                newTable.remove(parserLine);
+            }
+        }
+        return newTable;
     }
 
 }

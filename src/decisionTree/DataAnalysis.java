@@ -14,6 +14,10 @@ class DataAnalysis {
 //    private static LinkedList<Character> unwanted = new LinkedList<>();
     private static LinkedList<String> optionsLastColumn = new LinkedList<>();
 
+
+    static LinkedList<ParserLine> tableCopy=null;
+
+
     /* caracteres não pretendidos */
 /*
     private static void restrictions() {
@@ -26,10 +30,37 @@ class DataAnalysis {
 */
 
     // cálculo de entropia
+
+    static double[] entropy2(LinkedList<ParserLine> table){
+
+        int numberOfColumns = table.get(0).size();
+        double entropy[] = new double[numberOfColumns-2];
+
+
+        LinkedList<String> uniqueValuesInClass =  getClassUniqueValuesInColumn(table);
+        LinkedList<String> classColumn = getColumn(table,getClassColumnPosition(table));
+
+        int columnSize = getColumn(table,0).size();
+        for(int i=1;i<numberOfColumns-1;i++){
+            double entropyValue=0;
+            LinkedList<String> column = getColumn(table,i);
+
+
+
+            entropy[i] = entropyValue;
+        }
+
+        return entropy;
+    }
+
+
+
+
+
     static double[] entropy(LinkedList<ParserLine> table) {
         numberOfColumns = 0;                                // num de atributos
         numberOfLines = table.size() - 1;
-
+        tableCopy=new LinkedList<>(table);
         listsOfLines = readLines(table);
 /*
         for (int i=0; i<=numberOflines; i++) {
@@ -133,14 +164,14 @@ class DataAnalysis {
 
     /* lê linha a linha e passa cada linha para uma lista */
     private static LinkedList<String>[] readLines(LinkedList<ParserLine> table) {
-        @SuppressWarnings("unchecked")
+
         LinkedList<String>[] listsOfLines = new LinkedList[numberOfLines + 1];
 
         for (int i = 0; i <= numberOfLines; i++) {
             listsOfLines[i] = new LinkedList<>(table.get(i).getAll());
             System.out.println("Line: \t" + listsOfLines[i]);
             for (int j = 0; j < listsOfLines[i].size(); j++) {
-                listsOfLines[i].add(j, "\u0000" + listsOfLines[i].remove(j) + "\u0000");
+                listsOfLines[i].add(j, "\u0000" + listsOfLines[i].remove(j));
             }
         }
 
@@ -164,20 +195,8 @@ class DataAnalysis {
 
     /* lista com as classificações possíveis de um atributo */
     static LinkedList<String> numberOfDifferentOptions(int columnID) {
-        if (columnID < 1) {
-            System.out.println("Coluna errada quase de certeza");
-            return null;
-        } else {
-            LinkedList<String> temp = new LinkedList<>();
-            System.out.println("Size: \t" + listsOfLines.length);
-            for (int i = 1; i < listsOfLines.length; i++) {
-                String value = listsOfLines[i].get(columnID);
-                if (!temp.contains(value)) {
-                    temp.addFirst(value);
-                }
-            }
-            return temp;
-        }
+        return getUniqueValuesInColumn(tableCopy,columnID);
+
     }
 
 
