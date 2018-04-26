@@ -12,11 +12,13 @@ class Tree {
         String name;
         Node origin;
         Node end;
+        LinkedList<Integer> values;
 
-        Arc(String name, Node start, Node end) {
+        Arc(String name, Node start, Node end, LinkedList<Integer> values) {
             this.name = name;
             this.origin = start;
             this.end = end;
+            this.values = values;
         }
 
         public Node getArcExtreme() {
@@ -49,7 +51,7 @@ class Tree {
             LinkedList<String> l = DataAnalysis.numberOfDifferentOptions(column);
             if (l != null) {
                 for (String s : l) {
-                    Arc a = new Arc(s, this, null);
+                    Arc a = new Arc(s, this, null,null);
                     children.addLast(a);
                 }
             } else {
