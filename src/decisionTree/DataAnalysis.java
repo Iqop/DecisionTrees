@@ -1,6 +1,7 @@
 package decisionTree;
 
 import parser.ParserLine;
+import sun.awt.image.ImageWatched;
 
 import java.util.LinkedList;
 
@@ -34,20 +35,33 @@ class DataAnalysis {
     static double[] entropy2(LinkedList<ParserLine> table){
 
         int numberOfColumns = table.get(0).size();
-        double entropy[] = new double[numberOfColumns-2];
-
+        double entropy[] = new double[numberOfColumns-1];
 
         LinkedList<String> uniqueValuesInClass =  getClassUniqueValuesInColumn(table);
-        LinkedList<String> classColumn = getColumn(table,getClassColumnPosition(table));
 
-        int columnSize = getColumn(table,0).size();
+        int columnSize = getColumn(table,0).size()-1;
+
         for(int i=1;i<numberOfColumns-1;i++){
-            double entropyValue=0;
-            LinkedList<String> column = getColumn(table,i);
+            double entropyValueForColumn=0;
+
+            LinkedList<String> uniqueValuesInColumn = getUniqueValuesInColumn(table,i);
+
+            for(String uniqueValue : uniqueValuesInColumn){
+
+                LinkedList<ParserLine> tableWithRestriction = new LinkedList<>(cutTableBasedOnRestriction(table, i , uniqueValue));
+                double lines = tableWithRestriction.size()-1;
+                double innerEntropy = 0;
+                for(String uniqueClassValues : uniqueValuesInClass){
+                    double numberOfLines = new LinkedList<>(cutTableBasedOnRestriction(tableWithRestriction,getClassColumnPosition(table),uniqueClassValues)).size() -1;
+                    if (numberOfLines!=0) {
+                        innerEntropy += (numberOfLines / lines) * (Math.log(numberOfLines / lines) / Math.log(2.0));
+                    }
+                }
+                entropyValueForColumn+=Math.abs((lines/columnSize) * innerEntropy);
+            }
 
 
-
-            entropy[i] = entropyValue;
+            entropy[i] = entropyValueForColumn;
         }
 
         return entropy;
@@ -163,6 +177,7 @@ class DataAnalysis {
     }
 
     /* lê linha a linha e passa cada linha para uma lista */
+    //Nao necessario para entropy2
     private static LinkedList<String>[] readLines(LinkedList<ParserLine> table) {
 
         LinkedList<String>[] listsOfLines = new LinkedList[numberOfLines + 1];
@@ -170,6 +185,7 @@ class DataAnalysis {
         for (int i = 0; i <= numberOfLines; i++) {
             listsOfLines[i] = new LinkedList<>(table.get(i).getAll());
             System.out.println("Line: \t" + listsOfLines[i]);
+
             for (int j = 0; j < listsOfLines[i].size(); j++) {
                 listsOfLines[i].add(j, "\u0000" + listsOfLines[i].remove(j));
             }

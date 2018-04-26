@@ -25,6 +25,17 @@ public class DecisionTree {
         System.out.println("File successfully loaded");
 
 
+
+        /*
+            Ambas retornam o mesmo, é só escolher xD
+         */
+        double entropy[] = DataAnalysis.entropy(table);
+
+        double entropy2[] = DataAnalysis.entropy2(table);
+
+
+
+
         sortedEntropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
 
 
@@ -45,4 +56,3 @@ public class DecisionTree {
         }
     }
 }
-

@@ -68,7 +68,7 @@ public class TableUtils {
         return new LinkedList<>(toRet);
     }
 
-    public LinkedList<ParserLine> cutTableBasedOnRestriction(LinkedList<ParserLine> table,String atribute,String atributeValue){
+    public static LinkedList<ParserLine> cutTableBasedOnRestriction(LinkedList<ParserLine> table,String atribute,String atributeValue){
         LinkedList<ParserLine> newTable = new LinkedList<>(table);
         int colNumber = getColumnFromName(table,atribute);
         for(int i=1;i<table.size();i++){
@@ -80,7 +80,7 @@ public class TableUtils {
         return newTable;
     }
 
-    public LinkedList<ParserLine> cutTableBasedOnRestriction(LinkedList<ParserLine> table,int atributeIndex,String atributeValue){
+    public static LinkedList<ParserLine> cutTableBasedOnRestriction(LinkedList<ParserLine> table,int atributeIndex,String atributeValue){
         LinkedList<ParserLine> newTable = new LinkedList<>(table);
         for(int i=1;i<table.size();i++){
             if (!table.get(i).get(atributeIndex).equals(atributeValue)){
