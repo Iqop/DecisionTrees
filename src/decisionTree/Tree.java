@@ -21,8 +21,10 @@ public class Tree {
     Node root;
     int size;
 
+    //Vale mais passar para null o root, visto que fica uma descrepancia entre o numero
+    //de nos (size) e a quantidade de nos alocados (facilita o processo de adição e alteraçao)
     Tree() {
-        root = new Node(null,null,null,0);
+        root = null;//new Node(null,null,null,0);
         size = 0;
     }
 

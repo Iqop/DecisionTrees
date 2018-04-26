@@ -1,7 +1,6 @@
 package utils;
 
 import parser.ParserLine;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -52,10 +51,16 @@ public class TableUtils {
     }
 
 
-    public static LinkedList<String> getClassDiferentColumnValues(LinkedList<ParserLine> table){
+    public static LinkedList<String> getClassUniqueValuesInColumn(LinkedList<ParserLine> table){
         Set<String> toRet = new HashSet<>(getColumn(table,getClassColumnPosition(table)));
         toRet.remove(getColumnName(table,getClassColumnPosition(table)));
 
+        return new LinkedList<>(toRet);
+    }
+
+    public static LinkedList<String> getUniqueValuesInColumn(LinkedList<ParserLine> table, int index){
+        Set<String> toRet = new HashSet<>(getColumn(table,index));
+        toRet.remove(getColumnName(table,index));
         return new LinkedList<>(toRet);
     }
 

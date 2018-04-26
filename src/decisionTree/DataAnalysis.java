@@ -180,7 +180,7 @@ class DataAnalysis {
 
 
 
-        optionsLastColumn = getClassDiferentColumnValues(table);
+        optionsLastColumn = getClassUniqueValuesInColumn(table);
         /*
             Mesma cena de cima
          */
