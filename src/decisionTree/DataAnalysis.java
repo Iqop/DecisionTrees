@@ -46,18 +46,18 @@ class DataAnalysis {
 
             LinkedList<String> uniqueValuesInColumn = getUniqueValuesInColumn(table,i);
 
-            for(String uniqueValue : uniqueValuesInColumn){
+            for(String uniqueValueInColumn : uniqueValuesInColumn){
 
-                LinkedList<ParserLine> tableWithRestriction = new LinkedList<>(cutTableBasedOnRestriction(table, i , uniqueValue));
-                double lines = tableWithRestriction.size()-1;
+                LinkedList<ParserLine> tableWithIRest = new LinkedList<>(cutTableBasedOnRestriction(table, i , uniqueValueInColumn));
+                double nLinesOnIRest = tableWithIRest.size()-1;
                 double innerEntropy = 0;
-                for(String uniqueClassValues : uniqueValuesInClass){
-                    double numberOfLines = new LinkedList<>(cutTableBasedOnRestriction(tableWithRestriction,getClassColumnPosition(table),uniqueClassValues)).size() -1;
-                    if (numberOfLines!=0) {
-                        innerEntropy += (numberOfLines / lines) * (Math.log(numberOfLines / lines) / Math.log(2.0));
+                for(String uniqueClassValue : uniqueValuesInClass){
+                    double nLinesOnCRest = new LinkedList<>(cutTableBasedOnRestriction(tableWithIRest,getClassColumnPosition(table),uniqueClassValue)).size() -1;
+                    if (nLinesOnCRest!=0) {
+                        innerEntropy += (nLinesOnCRest / nLinesOnIRest) * (Math.log(nLinesOnCRest / nLinesOnIRest) / Math.log(2.0));
                     }
                 }
-                entropyValueForColumn+=Math.abs((lines/columnSize) * innerEntropy);
+                entropyValueForColumn+=Math.abs((nLinesOnIRest/columnSize) * innerEntropy);
             }
 
 
@@ -228,8 +228,4 @@ class DataAnalysis {
         return value;
     }
 
-
-    static String nameOfChoice(int id) {
-        return listsOfLines[0].get(id);
-    }
 }

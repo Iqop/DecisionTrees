@@ -2,7 +2,7 @@ package decisionTree;
 
 import parser.CSVParser;
 import parser.ParserLine;
-
+import static utils.TableUtils.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -29,24 +29,21 @@ public class DecisionTree {
         /*
             Ambas retornam o mesmo, é só escolher xD
          */
-        double entropy[] = DataAnalysis.entropy(table);
+        System.out.println(DataAnalysis.entropy(table));
 
-        double entropy2[] = DataAnalysis.entropy2(table);
-
-
-
+        System.out.println(DataAnalysis.entropy2(table));
 
         sortedEntropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
 
 
         System.out.println("Building the decision tree");
 
-        buildDecisionTree();
+        buildDecisionTree(table);
     }
 
-    private static void buildDecisionTree() {
+    private static void buildDecisionTree(LinkedList<ParserLine> table) {
         int idOfBest = DataAnalysis.attributeChoice(sortedEntropy);
-        Tree.Node root = new Tree.Node(DataAnalysis.nameOfChoice(idOfBest), null, null, 0, idOfBest);
+        Tree.Node root = new Tree.Node(getColumnName(table,idOfBest), null, null, 0, idOfBest,table);
         System.out.println("Root: \t" + root.nameOfAttribute);
         for (Tree.Arc a : root.children) {
             System.out.println(a.name);
