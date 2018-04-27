@@ -1,7 +1,6 @@
 package decisionTree;
 
 import parser.ParserLine;
-import sun.awt.image.ImageWatched;
 
 import java.util.LinkedList;
 
@@ -10,71 +9,16 @@ import static utils.TableUtils.*;
 class DataAnalysis {
 
     private static int numberOfColumns;
-    private static int numberOfLines;
-    private static LinkedList<String>[] listsOfLines;
-//    private static LinkedList<Character> unwanted = new LinkedList<>();
+    static int numberOfLines;
+    static LinkedList<String>[] listsOfLines;
     private static LinkedList<String> optionsLastColumn = new LinkedList<>();
-
-
-    static LinkedList<ParserLine> tableCopy=null;
-
-
-    /* caracteres não pretendidos */
-/*
-    private static void restrictions() {
-        unwanted.addFirst('[');
-        unwanted.addFirst(']');
-        unwanted.addFirst(' ');
-        unwanted.addFirst(',');
-        unwanted.addFirst('\n');
-    }
-*/
+    private static LinkedList<ParserLine> tableCopy = null;
 
     // cálculo de entropia
-
-    static double[] entropy2(LinkedList<ParserLine> table){
-
-        int numberOfColumns = table.get(0).size();
-        double entropy[] = new double[numberOfColumns-1];
-
-        LinkedList<String> uniqueValuesInClass =  getClassUniqueValuesInColumn(table);
-
-        int columnSize = getColumn(table,0).size()-1;
-
-        for(int i=1;i<numberOfColumns-1;i++){
-            double entropyValueForColumn=0;
-
-            LinkedList<String> uniqueValuesInColumn = getUniqueValuesInColumn(table,i);
-
-            for(String uniqueValueInColumn : uniqueValuesInColumn){
-
-                LinkedList<ParserLine> tableWithIRest = new LinkedList<>(cutTableBasedOnRestriction(table, i , uniqueValueInColumn));
-                double nLinesOnIRest = tableWithIRest.size()-1;
-                double innerEntropy = 0;
-                for(String uniqueClassValue : uniqueValuesInClass){
-                    double nLinesOnCRest = new LinkedList<>(cutTableBasedOnRestriction(tableWithIRest,getClassColumnPosition(table),uniqueClassValue)).size() -1;
-                    if (nLinesOnCRest!=0) {
-                        innerEntropy += (nLinesOnCRest / nLinesOnIRest) * (Math.log(nLinesOnCRest / nLinesOnIRest) / Math.log(2.0));
-                    }
-                }
-                entropyValueForColumn+=Math.abs((nLinesOnIRest/columnSize) * innerEntropy);
-            }
-
-
-            entropy[i] = entropyValueForColumn;
-        }
-
-        return entropy;
-    }
-
-
-
-
-
     static double[] entropy(LinkedList<ParserLine> table) {
         numberOfColumns = 0;                                // num de atributos
         numberOfLines = table.size() - 1;
-        tableCopy=new LinkedList<>(table);
+        tableCopy = new LinkedList<>(table);
         listsOfLines = readLines(table);
 /*
         for (int i=0; i<=numberOflines; i++) {
@@ -144,6 +88,41 @@ class DataAnalysis {
         return array;
     }
 
+    static double[] entropy2(LinkedList<ParserLine> table) {
+
+        int numberOfColumns = table.get(0).size();
+        double entropy[] = new double[numberOfColumns - 1];
+
+        LinkedList<String> uniqueValuesInClass = getClassUniqueValuesInColumn(table);
+
+        int columnSize = getColumn(table, 0).size() - 1;
+
+        for (int i = 1; i < numberOfColumns - 1; i++) {
+            double entropyValueForColumn = 0;
+
+            LinkedList<String> uniqueValuesInColumn = getUniqueValuesInColumn(table, i);
+
+            for (String uniqueValueInColumn : uniqueValuesInColumn) {
+
+                LinkedList<ParserLine> tableWithIRest = new LinkedList<>(cutTableBasedOnRestriction(table, i, uniqueValueInColumn));
+                double nLinesOnIRest = tableWithIRest.size() - 1;
+                double innerEntropy = 0;
+                for (String uniqueClassValue : uniqueValuesInClass) {
+                    double nLinesOnCRest = new LinkedList<>(cutTableBasedOnRestriction(tableWithIRest, getClassColumnPosition(table), uniqueClassValue)).size() - 1;
+                    if (nLinesOnCRest != 0) {
+                        innerEntropy += (nLinesOnCRest / nLinesOnIRest) * (Math.log(nLinesOnCRest / nLinesOnIRest) / Math.log(2.0));
+                    }
+                }
+                entropyValueForColumn += Math.abs((nLinesOnIRest / columnSize) * innerEntropy);
+            }
+
+
+            entropy[i] = entropyValueForColumn;
+        }
+
+        return entropy;
+    }
+
 
     // ordenação ascendente do vetor por entropia
     static int[] sortEntropy(double[] array) {
@@ -176,33 +155,23 @@ class DataAnalysis {
         return idSorted;
     }
 
-    /* lê linha a linha e passa cada linha para uma lista */
-    //Nao necessario para entropy2
-    private static LinkedList<String>[] readLines(LinkedList<ParserLine> table) {
 
+    /* lê linha a linha e passa cada linha para uma lista */
+    private static LinkedList<String>[] readLines(LinkedList<ParserLine> table) {
+        @SuppressWarnings("unchecked")
         LinkedList<String>[] listsOfLines = new LinkedList[numberOfLines + 1];
 
         for (int i = 0; i <= numberOfLines; i++) {
             listsOfLines[i] = new LinkedList<>(table.get(i).getAll());
-            System.out.println("Line: \t" + listsOfLines[i]);
-
+//            System.out.println("Line: \t" + listsOfLines[i]);
             for (int j = 0; j < listsOfLines[i].size(); j++) {
-                listsOfLines[i].add(j, "\u0000" + listsOfLines[i].remove(j));
+                listsOfLines[i].add(j, "\0" + listsOfLines[i].remove(j));
             }
         }
 
-        //Exemplificação do que disse em cima
-
-        System.out.println("Teste de comparação: "+(listsOfLines[0].get(0).compareTo("ID")==0));
-
-
-
         optionsLastColumn = getClassUniqueValuesInColumn(table);
-        /*
-            Mesma cena de cima
-         */
-        for(int i=0;i<optionsLastColumn.size();i++){
-            optionsLastColumn.add(i,"\u0000"+optionsLastColumn.remove(i));
+        for (int i = 0; i < optionsLastColumn.size(); i++) {
+            optionsLastColumn.add(i, "\0" + optionsLastColumn.remove(i));
         }
         numberOfColumns = listsOfLines[1].size();
         return listsOfLines;
@@ -211,10 +180,8 @@ class DataAnalysis {
 
     /* lista com as classificações possíveis de um atributo */
     static LinkedList<String> numberOfDifferentOptions(int columnID) {
-        return getUniqueValuesInColumn(tableCopy,columnID);
-
+        return getUniqueValuesInColumn(tableCopy, columnID);
     }
-
 
     /* escolha do melhor atributo */
     static int attributeChoice(int[] array) {
@@ -228,4 +195,9 @@ class DataAnalysis {
         return value;
     }
 
+
+    /* nome do atributo dada coluna */
+    static String nameOfChoice(int id) {
+        return listsOfLines[0].get(id);
+    }
 }

@@ -4,7 +4,9 @@ package decisionTree;
 import parser.ParserLine;
 
 import java.util.LinkedList;
-import static utils.TableUtils.*;
+
+import static utils.TableUtils.cutTableBasedOnRestriction;
+
 
 class Tree {
 
@@ -21,7 +23,7 @@ class Tree {
             this.values = values;
         }
 
-        public Node getArcExtreme() {
+        Node getArcExtreme() {
             return end;
         }
     }
@@ -34,28 +36,24 @@ class Tree {
         LinkedList<ParserLine> table;
         int depth;
 
-        Node(String nameOfAttribute, String classification, Node dad, int depth, int column,LinkedList<ParserLine> table) {
+        Node(String nameOfAttribute, String classification, Node dad, int depth, int column, LinkedList<ParserLine> table) {
             this.nameOfAttribute = nameOfAttribute;
             this.classification = classification;
             this.father = dad;
             this.children = new LinkedList<>();
             this.depth = depth;
             this.table = new LinkedList<>(table);
-            if (dad!=null){
-                for (Arc arc : dad.children){
-                    if (arc.getArcExtreme().equals(this)){
-                        this.table = cutTableBasedOnRestriction(table,nameOfAttribute,arc.name);
+            if (dad != null) {
+                for (Arc arc : dad.children) {
+                    if (arc.getArcExtreme().equals(this)) {
+                        this.table = cutTableBasedOnRestriction(table, nameOfAttribute, arc.name);
                     }
                 }
             }
             LinkedList<String> l = DataAnalysis.numberOfDifferentOptions(column);
-            if (l != null) {
-                for (String s : l) {
-                    Arc a = new Arc(s, this, null,null);
-                    children.addLast(a);
-                }
-            } else {
-                children = null;
+            for (String s : l) {
+                Arc a = new Arc("\0" + s, this, null, null);
+                children.addLast(a);
             }
         }
 
