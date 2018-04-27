@@ -5,7 +5,6 @@ import parser.ParserLine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import static utils.TableUtils.getColumnName;
@@ -54,7 +53,7 @@ public class DecisionTree {
 
         for (Tree.Arc a : root.children) {
             System.out.println("Nome arco: \t" + a.name);
-            LinkedList<Integer> temp = new LinkedList<>();
+//            LinkedList<Integer> temp = new LinkedList<>();
             boolean allTheSame = true;
             String aux = null;
 
@@ -67,8 +66,8 @@ public class DecisionTree {
             /* verifica se na ultima coluna as opcoes sao iguais para cada classificacao*/
             for (int i = 1; i <= DataAnalysis.numberOfLines; i++) {
                 if (DataAnalysis.listsOfLines[i].get(idOfBest).equals(a.name)) {
-                    temp.addFirst(i);
-                    System.out.println("Valor pertencente: " + i);
+                    a.values.addFirst(i);
+                    System.out.println("Valor pertencente: " + a.values.getFirst());
                     if (allTheSame) {
                         if (aux == null) {
                             aux = DataAnalysis.listsOfLines[i].getLast();
@@ -82,12 +81,10 @@ public class DecisionTree {
             }
 
             System.out.println("All the same: " + allTheSame + "\n");
-
-            a.values = temp;
-            temp.clear();
         }
 
-//        System.out.println("Consistencia: " + DataAnalysis.checkConsistency(idOfBest));
+//        System.out.println("C
+// onsistencia: " + DataAnalysis.checkConsistency(idOfBest));
 
     }
 }

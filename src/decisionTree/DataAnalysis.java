@@ -200,4 +200,36 @@ class DataAnalysis {
     static String nameOfChoice(int id) {
         return listsOfLines[0].get(id);
     }
+
+    /* PLURALIDADE */
+    static String getPlutality(LinkedList<Integer> IDs) {
+        int max = -1, idOfMax = -1, count=0;
+        LinkedList<String> temp = numberOfDifferentOptions(numberOfColumns - 1);
+        int size = temp.size();
+        for (int i = 0; i < size; i++) {
+            temp.addLast('\0' + temp.removeFirst());
+        }
+//        System.out.println("Nome da coluna: \t" + nameOfChoice(numberOfColumns - 1));
+//        System.out.println("Num de escolhas: \t" + temp.size());
+        for (int i = 0; i < size; i++) {
+            count = 0;
+//            System.out.println("Entrou 1");
+            for (Integer id : IDs) {
+//                System.out.println("Entrou 2");
+//                System.out.println("Na lista: \t" + temp.get(i));
+//                System.out.println("No array: \t" + listsOfLines[id].getLast());
+                if (listsOfLines[id].getLast().equals(temp.get(i))) {
+                    count++;
+                }
+            }
+            if (count > max) {
+//                System.out.println("Entrou 3");
+                max = count;
+                idOfMax = i;
+            }
+        }
+//        System.out.println("Max: " + max);
+//        System.out.println("Id: " + idOfMax);
+        return temp.get(idOfMax);
+    }
 }
