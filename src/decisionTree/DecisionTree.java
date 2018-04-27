@@ -44,13 +44,6 @@ public class DecisionTree {
         System.out.println("Root: \t" + root.nameOfAttribute);
 
 
-        /////////////////// fazer aqui análise
-
-        LinkedList<Integer> IDs = new LinkedList<>();
-        for (int i = 0; i <= DataAnalysis.numberOfLines; i++) {
-            IDs.addLast(i);
-        }
-
         for (Tree.Arc a : root.children) {
             System.out.println("Nome arco: \t" + a.name);
 //            LinkedList<Integer> temp = new LinkedList<>();
@@ -79,13 +72,8 @@ public class DecisionTree {
                     }
                 }
             }
-
             System.out.println("All the same: " + allTheSame + "\n");
         }
-
-//        System.out.println("C
-// onsistencia: " + DataAnalysis.checkConsistency(idOfBest));
-
     }
 }
 
