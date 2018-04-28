@@ -2,16 +2,15 @@ package decisionTree;
 
 import parser.CSVParser;
 import parser.ParserLine;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 
-import static utils.TableUtils.getColumnName;
+import static utils.TableUtils.*;
 
 public class DecisionTree {
 
-    private static int[] sortedEntropy;
+    static int counter;
 
     public static void main(String[] args) {
         System.out.printf("Performing parsing of %s to a data structure\n\n", args[0]);
@@ -26,21 +25,33 @@ public class DecisionTree {
         }
         System.out.println("File successfully loaded");
 
-        System.out.println((DataAnalysis.entropy(table)));
-
-//        System.out.println((DataAnalysis.entropy2(table)));
-
-        sortedEntropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table));
-
+        System.out.println(table.toString());
 
         System.out.println("Building the decision tree");
 
-        buildDecisionTree(table);
+        LinkedList<String> atributes = new LinkedList<>(table.get(0).getAll());
+        atributes.remove(0);
+        atributes.remove(atributes.size()-1);
+        counter=1;
+        buildDecisionTree2(table,atributes,0);
     }
 
     private static void buildDecisionTree(LinkedList<ParserLine> table) {
+        LinkedList<String> atributes = new LinkedList<>(table.get(0).getAll());
+        atributes.remove(0);
+        atributes.remove(atributes.size()-1);
+        int[] sortedEntropy = DataAnalysis.sortEntropy(DataAnalysis.entropy(table,atributes));
+        /*
+            O que é suposto o atributeChoice fazer?
+            Se for escolher o de menor entropia seria só selecionar o segundo indice (1) da sortedEntropy
+         */
+        //int idOfBest = sortedEntropy[1];
+
         int idOfBest = DataAnalysis.attributeChoice(sortedEntropy);
+
         Tree.Node root = new Tree.Node(getColumnName(table, idOfBest), null, null, 0, idOfBest, table);
+        //Se calhar podes usar o construtor
+        //Tree t = new Tree(idOfBest,null,table);
         System.out.println("Root: \t" + root.nameOfAttribute);
 
 
@@ -75,5 +86,39 @@ public class DecisionTree {
             System.out.println("All the same: " + allTheSame + "\n");
         }
     }
+
+    private static void buildDecisionTree2(LinkedList<ParserLine> table,LinkedList<String> remainingAtributes,int depth){
+        String tabs="";
+        for(int i=0;i<depth;i++) {
+            tabs+="\t";
+        }
+
+        LinkedList<String> classValues = getClassUniqueValuesInColumn(table);
+        if (classValues.size()==1){
+            System.out.println(classValues.get(0)+"(counter"+counter+")");
+            counter++;
+        }else if (remainingAtributes.size()==0){
+            System.out.println(getMostCommonValueInClass(table)+"(counter" + counter+")");
+            counter++;
+        }else{
+            System.out.println();
+            int bestAtributeId = DataAnalysis.sortEntropy(DataAnalysis.entropy(table,remainingAtributes))[1];
+            remainingAtributes.remove(getColumnName(table,bestAtributeId));
+            System.out.println(tabs + "< " + getColumnName(table, bestAtributeId) + " >");
+            for (String value : getUniqueValuesInColumn(table, bestAtributeId)) {
+                System.out.print(tabs + "\t" + value + ":");
+                LinkedList<ParserLine> tableWithRestrictions = cutTableBasedOnRestriction(table, bestAtributeId, value);
+                if ((tableWithRestrictions.size() - 1) == 0) {
+                    System.out.println(getMostCommonValueInClass(table)+"(counter" + counter+")");
+                    counter++;
+                } else {
+                    LinkedList<String> newAtrib = new LinkedList<>(remainingAtributes);
+                    newAtrib.remove(getColumnName(table,bestAtributeId));
+                    buildDecisionTree2(tableWithRestrictions, newAtrib, depth + 2);
+                }
+            }
+        }
+    }
+
 }
 

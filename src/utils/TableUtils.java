@@ -1,9 +1,9 @@
 package utils;
 
 import parser.ParserLine;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import sun.awt.image.ImageWatched;
+
+import java.util.*;
 
 public class TableUtils {
     public static LinkedList<Integer> getColumnsThatContainsNumerals(LinkedList<ParserLine> table){
@@ -89,6 +89,13 @@ public class TableUtils {
             }
         }
         return newTable;
+    }
+
+    public static String getMostCommonValueInClass(LinkedList<ParserLine> table) {
+        /*
+        TODO finish this
+         */
+        return "";
     }
 
 }

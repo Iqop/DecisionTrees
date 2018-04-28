@@ -5,7 +5,7 @@ import parser.ParserLine;
 
 import java.util.LinkedList;
 
-import static utils.TableUtils.cutTableBasedOnRestriction;
+import static utils.TableUtils.*;
 
 
 class Tree {
@@ -72,6 +72,14 @@ class Tree {
         public void addChild(Arc arc) {
             children.addLast(arc);
         }
+    }
+
+    Node treeOrigin;
+    int size;
+
+    Tree(int columnId,String classification,LinkedList<ParserLine> table){
+        treeOrigin = new Node(getColumnName(table,columnId),classification,null,0,columnId,table);
+        size=1;
     }
 }
 

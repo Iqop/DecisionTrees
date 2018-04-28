@@ -15,7 +15,7 @@ class DataAnalysis {
     private static LinkedList<ParserLine> tableCopy = null;
 
     /* cálculo de entropia */
-    static double[] entropy(LinkedList<ParserLine> table) {
+    static double[] entropy(LinkedList<ParserLine> table,LinkedList<String> availableAtributes) {
         numberOfColumns = 0;                                // num de atributos
         numberOfLines = table.size() - 1;
         tableCopy = new LinkedList<>(table);
@@ -68,10 +68,17 @@ class DataAnalysis {
             }
             temp.clear();
         }
+
+        for (int i=1;i<numberOfColumns-1;i++){
+            if (!availableAtributes.contains(getColumnName(table,i))){
+                array[i]=Double.MAX_VALUE;
+            }
+        }
+
         return array;
     }
 
-    static double[] entropy2(LinkedList<ParserLine> table) {
+    static double[] entropy2(LinkedList<ParserLine> table,LinkedList<String> availableAtributes) {
 
         int numberOfColumns = table.get(0).size();
         double entropy[] = new double[numberOfColumns - 1];
@@ -88,19 +95,27 @@ class DataAnalysis {
             for (String uniqueValueInColumn : uniqueValuesInColumn) {
 
                 LinkedList<ParserLine> tableWithIRest = new LinkedList<>(cutTableBasedOnRestriction(table, i, uniqueValueInColumn));
-                double nLinesOnIRest = tableWithIRest.size() - 1;
+                double possiveis = tableWithIRest.size() - 1;
                 double innerEntropy = 0;
                 for (String uniqueClassValue : uniqueValuesInClass) {
-                    double nLinesOnCRest = new LinkedList<>(cutTableBasedOnRestriction(tableWithIRest, getClassColumnPosition(table), uniqueClassValue)).size() - 1;
-                    if (nLinesOnCRest != 0) {
-                        innerEntropy += (nLinesOnCRest / nLinesOnIRest) * (Math.log(nLinesOnCRest / nLinesOnIRest) / Math.log(2.0));
+                    double favoraveis = new LinkedList<>(cutTableBasedOnRestriction(tableWithIRest, getClassColumnPosition(table), uniqueClassValue)).size() - 1;
+                    if (favoraveis != 0) {
+                        innerEntropy += (favoraveis / possiveis) * (Math.log(favoraveis / possiveis) / Math.log(2.0));
                     }
                 }
-                entropyValueForColumn += Math.abs((nLinesOnIRest / columnSize) * innerEntropy);
+                entropyValueForColumn += Math.abs((possiveis / columnSize) * innerEntropy);
             }
 
             entropy[i] = entropyValueForColumn;
         }
+
+        for (int i=1;i<numberOfColumns-1;i++){
+            if (!availableAtributes.contains(getColumnName(table,i))){
+                entropy[i]=Double.MAX_VALUE;
+            }
+        }
+
+
 
         return entropy;
     }
@@ -129,11 +144,11 @@ class DataAnalysis {
                 }
             }
         }
-
+/*
         for (int i = 0; i < array.length; i++) {
             System.out.println("V: \t" + idSorted[i] + "\t" + array[i]);
         }
-
+*/
         return idSorted;
     }
 
@@ -174,6 +189,7 @@ class DataAnalysis {
                 array[i] = Integer.MAX_VALUE;
             }
         }
+        System.out.println("Value :"+value);
         return value;
     }
 
