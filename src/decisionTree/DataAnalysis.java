@@ -14,20 +14,15 @@ class DataAnalysis {
     private static LinkedList<String> optionsLastColumn = new LinkedList<>();
     private static LinkedList<ParserLine> tableCopy = null;
 
-    // cálculo de entropia
+    /* cálculo de entropia */
     static double[] entropy(LinkedList<ParserLine> table) {
         numberOfColumns = 0;                                // num de atributos
         numberOfLines = table.size() - 1;
         tableCopy = new LinkedList<>(table);
         listsOfLines = readLines(table);
-/*
-        for (int i=0; i<=numberOflines; i++) {
-            System.out.println("Teste: \t" + arrayOfLists[i].getFirst());
-        }
-*/
 
-        System.out.println("Options: \t" + optionsLastColumn.size());
-        System.out.println("Number of columns: \t" + numberOfColumns);
+//        System.out.println("Options: \t" + optionsLastColumn.size());
+//        System.out.println("Number of columns: \t" + numberOfColumns);
 
         double[] array = new double[numberOfColumns - 1];
         String valueLastColumn;
@@ -45,7 +40,7 @@ class DataAnalysis {
                     for (int m = 0; m < optionsLastColumn.size(); m++) {
                         favoraveis = 0;
                         valueLastColumn = optionsLastColumn.get(m);
-                        System.out.println("A ver: " + attributeValue + valueLastColumn);
+//                        System.out.println("A ver: " + attributeValue + valueLastColumn);
                         for (int l = j; l <= numberOfLines; l++) {
                             if (listsOfLines[l].get(k).equals(attributeValue)) {
                                 if (m == 0) {
@@ -73,18 +68,6 @@ class DataAnalysis {
             }
             temp.clear();
         }
-/*
-        for (int i = 0; i < numberOfColumns; i++) {
-            System.out.println(listsOfLines[i + 1].getFirst() + "\t" + array[i]);
-        }
-*/
-/*        for (String s : listsOfLines[0])
-            System.out.println(s);
-
-        for (Double i : array)
-            System.out.println("Valor: " + i);
-*/
-//        System.out.println("Line: \t" + listsOfLines[0].get(2));
         return array;
     }
 
@@ -116,7 +99,6 @@ class DataAnalysis {
                 entropyValueForColumn += Math.abs((nLinesOnIRest / columnSize) * innerEntropy);
             }
 
-
             entropy[i] = entropyValueForColumn;
         }
 
@@ -124,7 +106,7 @@ class DataAnalysis {
     }
 
 
-    // ordenação ascendente do vetor por entropia
+    /* ordenação ascendente do vetor por entropia */
     static int[] sortEntropy(double[] array) {
         int[] idSorted = new int[array.length];
 
@@ -201,9 +183,10 @@ class DataAnalysis {
         return listsOfLines[0].get(id);
     }
 
+
     /* PLURALIDADE */
-    static String getPlutality(LinkedList<Integer> IDs) {
-        int max = -1, idOfMax = -1, count=0;
+    static String[] getPluralityValue(LinkedList<Integer> IDs) {
+        int max = -1, idOfMax = -1, count;
         LinkedList<String> temp = numberOfDifferentOptions(numberOfColumns - 1);
         int size = temp.size();
         for (int i = 0; i < size; i++) {
@@ -228,8 +211,50 @@ class DataAnalysis {
                 idOfMax = i;
             }
         }
+        String[] aux = new String[2];
+        aux[0] = temp.get(idOfMax);
+        aux[1] += max;
 //        System.out.println("Max: " + max);
 //        System.out.println("Id: " + idOfMax);
-        return temp.get(idOfMax);
+        return aux;
+    }
+
+
+    /* Pluralidade do pai */
+    static String getDadPlurality(Tree.Node node) {
+        String[] major = new String[2];
+        for (Tree.Arc a : node.children) {
+            String[] value = getPluralityValue(a.values);
+            if (Integer.parseInt(value[1]) > Integer.parseInt(major[1])) {
+                major[0] = value[0];
+                major[1] = value[1];
+            }
+        }
+        return major[0];
+    }
+
+
+    /* verifica se na ultima coluna as opcoes sao iguais para cada classificacao*/
+    static boolean checkSameClassification(Tree.Arc a, int idOfBest) {
+        boolean allTheSame = true;
+        String aux = null;
+
+        for (int i = 1; i <= numberOfLines; i++) {
+            if (listsOfLines[i].get(idOfBest).equals(a.name)) {
+                a.values.addFirst(i);
+//                System.out.println("Valor pertencente: " + a.values.getFirst());
+                if (allTheSame) {
+                    if (aux == null) {
+                        aux = listsOfLines[i].getLast();
+                    } else {
+                        if (!listsOfLines[i].getLast().equals(aux)) {
+                            allTheSame = false;
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("All the same: " + allTheSame + "\n");
+        return allTheSame;
     }
 }
