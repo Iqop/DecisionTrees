@@ -99,7 +99,7 @@ public class DecisionTree {
             System.out.println(classValues.get(0)+"(counter"+counter+")");
             counter++;
         }else if (remainingAtributes.size()==0){
-            System.out.println(getMostCommonValueInClass(table)+"(counter" + counter+")");
+            System.out.println(getMostCommonValueInClass(table)+" (counter " + counter+")");
             counter++;
         }else{
             System.out.println();
@@ -109,7 +109,7 @@ public class DecisionTree {
                 System.out.print(tabs + "\t" + value + ":");
                 LinkedList<ParserLine> tableWithRestrictions = cutTableBasedOnRestriction(table, bestAtributeId, value);
                 if ((tableWithRestrictions.size() - 1) == 0) {
-                    System.out.println(getMostCommonValueInClass(table)+"(counter" + counter+")");
+                    System.out.println(getMostCommonValueInClass(table)+" (counter " + counter+")");
                     counter++;
                 } else {
                     LinkedList<String> newAtrib = new LinkedList<>(remainingAtributes);
