@@ -92,10 +92,24 @@ public class TableUtils {
     }
 
     public static String getMostCommonValueInClass(LinkedList<ParserLine> table) {
-        /*
-        TODO finish this
-         */
-        return "";
+        Map<String,Integer> m = new HashMap<>();
+        for (String s : getClassUniqueValuesInColumn(table)){
+            m.put(s,0);
+        }
+        LinkedList<String> column = new LinkedList<>(getColumn(table,getClassColumnPosition(table)));
+        column.remove(0);
+        for(String s :column){
+            m.put(s,m.get(s)+1);
+        }
+        int max = -1;
+        String maxId = "";
+        for(String s : getClassUniqueValuesInColumn(table)){
+            if (m.get(s)> max){
+                max = m.get(s);
+                maxId =s;
+            }
+        }
+        return maxId;
     }
 
 }

@@ -25,7 +25,6 @@ public class DecisionTree {
         }
         System.out.println("File successfully loaded");
 
-        System.out.println(table.toString());
 
         System.out.println("Building the decision tree");
 
@@ -33,7 +32,9 @@ public class DecisionTree {
         atributes.remove(0);
         atributes.remove(atributes.size()-1);
         counter=1;
+
         buildDecisionTree2(table,atributes,0);
+
     }
 
     private static void buildDecisionTree(LinkedList<ParserLine> table) {
@@ -103,7 +104,6 @@ public class DecisionTree {
         }else{
             System.out.println();
             int bestAtributeId = DataAnalysis.sortEntropy(DataAnalysis.entropy(table,remainingAtributes))[1];
-            remainingAtributes.remove(getColumnName(table,bestAtributeId));
             System.out.println(tabs + "< " + getColumnName(table, bestAtributeId) + " >");
             for (String value : getUniqueValuesInColumn(table, bestAtributeId)) {
                 System.out.print(tabs + "\t" + value + ":");
