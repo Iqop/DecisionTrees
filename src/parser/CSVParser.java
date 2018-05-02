@@ -30,7 +30,7 @@ public class CSVParser {
                 for(double min = minValue;min<=maxValue;min+=valuesInsideInterval){
                     if (value>=min && value<(min+valuesInsideInterval)){
                         //Used Locale.US to force the double value to be in format ___.____
-                        setToPosition(table,i,columnId,String.format(Locale.US,"%.2f - %.2f",min,(min+valuesInsideInterval)));
+                        setToPosition(table,i,columnId,String.format(Locale.US,"(%.2f - %.2f)",min,(min+valuesInsideInterval)));
                     }
                 }
             }

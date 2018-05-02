@@ -1,8 +1,9 @@
 package parser;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-public class ParserLine {
+public class ParserLine implements Serializable {
 
 	private LinkedList<String> data;
 

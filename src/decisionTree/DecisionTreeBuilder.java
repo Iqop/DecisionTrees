@@ -2,17 +2,17 @@ package decisionTree;
 
 import parser.CSVParser;
 import parser.ParserLine;
-import java.io.File;
-import java.io.FileNotFoundException;
+
+import java.io.*;
 import java.util.LinkedList;
 
 import static utils.TableUtils.*;
 
-public class DecisionTree {
+public class DecisionTreeBuilder {
 
     static int counter;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.printf("Performing parsing of %s to a data structure\n\n", args[0]);
         LinkedList<ParserLine> table;
 
@@ -33,7 +33,27 @@ public class DecisionTree {
         atributes.remove(atributes.size()-1);
         counter=1;
 
-        buildDecisionTree2(table,atributes,0);
+        Tree t = buildDecisionTree2(table,atributes,0);
+
+
+        String decisionTreeSaveFile = "decisionTree"+args[0].split("\\.")[0]+".ser";
+
+        System.out.println("Saving decision tree into "+decisionTreeSaveFile);
+
+
+        File file = new File(decisionTreeSaveFile);
+
+        if (!file.isFile()){
+            file.createNewFile();
+        }
+
+        FileOutputStream fileOutputStream = new FileOutputStream(decisionTreeSaveFile);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(t);
+        objectOutputStream.close();
+        fileOutputStream.close();
+
+        System.out.println("Done, you can now use DecisionTreeAnalist");
 
     }
 
@@ -88,7 +108,7 @@ public class DecisionTree {
         }
     }
 
-    private static void buildDecisionTree2(LinkedList<ParserLine> table,LinkedList<String> remainingAtributes,int depth){
+    private static Tree buildDecisionTree2(LinkedList<ParserLine> table,LinkedList<String> remainingAtributes,int depth){
         String tabs="";
         for(int i=0;i<depth;i++) {
             tabs+="\t";
@@ -103,7 +123,7 @@ public class DecisionTree {
             counter++;
         }else{
             System.out.println();
-            int bestAtributeId = DataAnalysis.sortEntropy(DataAnalysis.entropy(table,remainingAtributes))[1];
+            int bestAtributeId = DataAnalysis.sortEntropy(DataAnalysis.entropy2(table,remainingAtributes))[1];
             System.out.println(tabs + "< " + getColumnName(table, bestAtributeId) + " >");
             for (String value : getUniqueValuesInColumn(table, bestAtributeId)) {
                 System.out.print(tabs + "\t" + value + ":");
@@ -118,6 +138,7 @@ public class DecisionTree {
                 }
             }
         }
+        return null;
     }
 
 }

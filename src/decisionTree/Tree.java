@@ -3,14 +3,15 @@ package decisionTree;
 
 import parser.ParserLine;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 import static utils.TableUtils.*;
 
 
-class Tree {
+class Tree implements Serializable {
 
-    static class Arc {
+    static class Arc  implements Serializable{
         String name;
         Node origin;
         Node end;
@@ -28,7 +29,7 @@ class Tree {
         }
     }
 
-    static class Node {
+    static class Node implements Serializable{
         String nameOfAttribute;
         String classification;
         Node father;
@@ -50,7 +51,7 @@ class Tree {
                     }
                 }
             }
-            LinkedList<String> l = DataAnalysis.numberOfDifferentOptions(column);
+            LinkedList<String> l = getUniqueValuesInColumn(table,column);
             for (String s : l) {
                 Arc a = new Arc("\0" + s, this, null);
                 children.addLast(a);
@@ -76,10 +77,12 @@ class Tree {
 
     Node treeOrigin;
     int size;
+    LinkedList<String> atributes;
 
-    Tree(int columnId,String classification,LinkedList<ParserLine> table){
+    Tree(int columnId,LinkedList<String> atributes,String classification,LinkedList<ParserLine> table){
         treeOrigin = new Node(getColumnName(table,columnId),classification,null,0,columnId,table);
         size=1;
+        this.atributes = new LinkedList<>(atributes);
     }
 }
 
