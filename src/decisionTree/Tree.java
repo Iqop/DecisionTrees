@@ -12,16 +12,14 @@ import static utils.TableUtils.*;
 class Tree implements Serializable {
 
     static class Arc  implements Serializable{
-        String name;
-        Node origin;
+        String value;
         Node end;
-        LinkedList<Integer> values;
+        Node origin;
 
-        Arc(String name, Node start, Node end) {
-            this.name = name;
-            this.origin = start;
-            this.end = end;
-            this.values = new LinkedList<>();
+        Arc(String value,Node origin) {
+            this.value = value;
+            this.origin = origin;
+            this.end = null;
         }
 
         Node getArcExtreme() {
@@ -34,28 +32,33 @@ class Tree implements Serializable {
         String classification;
         Node father;
         LinkedList<Arc> children;
-        LinkedList<ParserLine> table;
         int depth;
 
-        Node(String nameOfAttribute, String classification, Node dad, int depth, int column, LinkedList<ParserLine> table) {
+        Node(String nameOfAttribute, Node dad, int depth, int column, LinkedList<ParserLine> table) {
             this.nameOfAttribute = nameOfAttribute;
-            this.classification = classification;
             this.father = dad;
             this.children = new LinkedList<>();
             this.depth = depth;
-            this.table = new LinkedList<>(table);
-            if (dad != null) {
-                for (Arc arc : dad.children) {
-                    if (arc.getArcExtreme().equals(this)) {
-                        this.table = cutTableBasedOnRestriction(table, nameOfAttribute, arc.name);
-                    }
-                }
-            }
+
             LinkedList<String> l = getUniqueValuesInColumn(table,column);
             for (String s : l) {
-                Arc a = new Arc("\0" + s, this, null);
+                Arc a = new Arc(s,this);
                 children.addLast(a);
             }
+        }
+
+        Arc getArc(String value){
+            for(Arc a : children){
+                if (a.value.equals(value)){
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        public Node(String classification, Node origin) {
+            this.classification=new String(classification);
+            this.father = origin;
         }
 
         public String getNameOfAttribute() {
@@ -79,10 +82,26 @@ class Tree implements Serializable {
     int size;
     LinkedList<String> atributes;
 
-    Tree(int columnId,LinkedList<String> atributes,String classification,LinkedList<ParserLine> table){
-        treeOrigin = new Node(getColumnName(table,columnId),classification,null,0,columnId,table);
-        size=1;
+    Tree(LinkedList<String> atributes){
+        treeOrigin = null;
         this.atributes = new LinkedList<>(atributes);
     }
+
+    Node insertNode(Arc endArc,int columnId,int depth,LinkedList<ParserLine> table){
+        Node n=null;
+        if (treeOrigin==null) {
+            treeOrigin = new Node(getColumnName(table, columnId), null, depth, columnId, table);
+            n=treeOrigin;
+        }else{
+            endArc.end = new Node(getColumnName(table,columnId),endArc.origin,depth,columnId,table);
+            n=endArc.end;
+        }
+        return n;
+    }
+
+    void insertNode(Arc endArc,String classification){
+        endArc.end = new Node(classification,endArc.origin);
+    }
+
 }
 

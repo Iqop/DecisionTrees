@@ -3,13 +3,13 @@ package decisionTree;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DecisionTreeAnalist {
+
+    static HashSet<String> foundClassification;
 
     public static void main (String args[]) {
         FileInputStream fileInputStream = null;
@@ -31,25 +31,26 @@ public class DecisionTreeAnalist {
 
         System.out.println(args[0]+" successfully loaded");
 
-        System.out.println(tree.treeOrigin.nameOfAttribute);
-
 
         System.out.println("You can now ask \"questions\"");
+        System.out.println("Format:"+tree.atributes.toString()+"\nWarning the number of atributes of the tree and of the querie must be the same");
         boolean exit = false;
         Scanner scan = new Scanner(System.in);
         while(!exit){
+            System.out.print("???- ");
             String s = scan.nextLine();
             if (s.toLowerCase().equals("exit")){
                 exit=true;
-            }else if (s.split(",").length != tree.atributes.size()){
+            }else if (s.split("\\,").length != tree.atributes.size()){
                 System.out.println("Your queries must contain "+tree.atributes.size()+" fields,");
                 System.out.println(s+" only contains "+s.split(",").length);
             }else{
-                String res = getClassFromInfo(s,tree);
-                if (res==null){
+                foundClassification = new HashSet<>();
+                execute(s,tree);
+                if (foundClassification.size()==0){
                     System.out.println("Not enough info to get to a conclusion");
                 }else{
-                    System.out.println("Classification: "+res);
+                    System.out.println("Classification(s): "+foundClassification.toString());
                 }
             }
         }
@@ -57,7 +58,7 @@ public class DecisionTreeAnalist {
     }
 
 
-    static String getClassFromInfo(String info,Tree tree){
+    static void execute(String info, Tree tree){
         Map<String,String> atributes = new HashMap<>();
         String splited[] = info.split(",");
         for(int i=0;i<splited.length;i++){
@@ -66,42 +67,52 @@ public class DecisionTreeAnalist {
 
         Tree.Node actualNode = tree.treeOrigin;
 
-        /*
-        TODO busca pela arvore, preciso pensar no que fazer com os nós null;
-         */
-
-        String res=null;
         if (atributes.get(actualNode.nameOfAttribute).toLowerCase().equals("null")){
             for(Tree.Arc a : actualNode.children){
-                res +=search(a.getArcExtreme(),atributes);
+                search(a.getArcExtreme(),atributes);
             }
         }else{
             for(Tree.Arc a : actualNode.children){
-                if(contidoNaClasse(a.name,atributes.get(actualNode.nameOfAttribute)))
-                res =search(a.getArcExtreme(),atributes);
+                if(contidoNaClasse(a.value,atributes.get(actualNode.nameOfAttribute)))
+                    search(a.getArcExtreme(),atributes);
             }
         }
 
-        return res;
+        return;
     }
 
     static boolean contidoNaClasse(String classe,String d){
         Pattern pattern = Pattern.compile("\\((.*) - (.*)\\)");
         Matcher matcher = pattern.matcher(classe);
         if (matcher.matches()){
+
             if ((Double.parseDouble(matcher.group(1)) <= Double.parseDouble(d)) && (Double.parseDouble(matcher.group(2)) > Double.parseDouble(d))){
                 return true;
             }
         }
-        return classe.equals(d);
+        return classe.toLowerCase().equals(d.toLowerCase());
     }
 
 
-    static String search(Tree.Node node,Map<String,String> atributes){
-        for(Tree.Arc a : node.children){
+    static void search(Tree.Node node,Map<String,String> atributes){
 
+        if (node.classification!=null){
+            foundClassification.add(node.classification);
+            return;
         }
-        return null;
+
+        if (atributes.get(node.nameOfAttribute).toLowerCase().equals("null")){
+            for(Tree.Arc a : node.children){
+                search(a.getArcExtreme(),atributes);
+            }
+        }else{
+            for(Tree.Arc a : node.children){
+                if(contidoNaClasse(a.value,atributes.get(node.nameOfAttribute)))
+                    search(a.getArcExtreme(),atributes);
+            }
+        }
+
+        return;
     }
 
 }

@@ -1,9 +1,5 @@
 .idea
-
 *.iml
 out
 *.class
-
-
-
-
+*.dt
