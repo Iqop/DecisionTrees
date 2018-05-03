@@ -33,7 +33,7 @@ public class DecisionTreeAnalist {
 
 
         System.out.println("You can now ask \"questions\"");
-        System.out.println("Format:"+tree.atributes.toString()+"\nWarning the number of atributes of the tree and of the querie must be the same");
+        System.out.println("Format:"+tree.attributes.toString()+"\nWarning the number of atributes of the tree and of the querie must be the same");
         boolean exit = false;
         Scanner scan = new Scanner(System.in);
         while(!exit){
@@ -41,8 +41,8 @@ public class DecisionTreeAnalist {
             String s = scan.nextLine();
             if (s.toLowerCase().equals("exit")){
                 exit=true;
-            }else if (s.split("\\,").length != tree.atributes.size()){
-                System.out.println("Your queries must contain "+tree.atributes.size()+" fields,");
+            }else if (s.split("\\,").length != tree.attributes.size()){
+                System.out.println("Your queries must contain "+tree.attributes.size()+" fields,");
                 System.out.println(s+" only contains "+s.split(",").length);
             }else{
                 foundClassification = new HashSet<>();
@@ -62,7 +62,7 @@ public class DecisionTreeAnalist {
         Map<String,String> atributes = new HashMap<>();
         String splited[] = info.split(",");
         for(int i=0;i<splited.length;i++){
-            atributes.put(tree.atributes.get(i),splited[i]);
+            atributes.put(tree.attributes.get(i),splited[i]);
         }
 
         Tree.Node actualNode = tree.treeOrigin;
