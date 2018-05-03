@@ -10,8 +10,9 @@ import static utils.TableUtils.*;
 
 public class DecisionTreeBuilder {
 
-    static int counter;
-    static Tree tree;
+    private static int counter;
+    private static Tree tree;
+
     public static void main(String[] args) throws IOException {
         System.out.printf("Performing parsing of %s to a data structure\n\n", args[0]);
         LinkedList<ParserLine> table;
@@ -30,16 +31,16 @@ public class DecisionTreeBuilder {
 
         LinkedList<String> atributes = new LinkedList<>(table.get(0).getAll());
         atributes.remove(0);
-        atributes.remove(atributes.size()-1);
-        counter=1;
+        atributes.remove(atributes.size() - 1);
+        counter = 1;
 
         tree = new Tree(atributes);
-        buildDecisionTree(table,atributes,0,null);
+        buildDecisionTree(table, atributes, 0, null);
 
 
-        String decisionTreeSaveFile = "decisionTree("+args[0].split("\\.")[0]+").dt";
+        String decisionTreeSaveFile = "decisionTree(" + args[0].split("\\.")[0] + ").dt";
 
-        System.out.println("Saving decision tree into "+decisionTreeSaveFile);
+        System.out.println("\nSaving decision tree into " + decisionTreeSaveFile);
 
 
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(decisionTreeSaveFile));
@@ -50,55 +51,53 @@ public class DecisionTreeBuilder {
 
     }
 
-
-    private static void buildDecisionTree(LinkedList<ParserLine> table, LinkedList<String> remainingAtributes, int depth, Tree.Arc arc){
-        String tabs="";
-        for(int i=0;i<depth;i++) {
-            tabs+="\t";
+    private static void buildDecisionTree(LinkedList<ParserLine> table, LinkedList<String> remainingAtributes, int depth, Tree.Arc arc) {
+        StringBuilder tabs = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            tabs.append("\t");
         }
 
 
         LinkedList<String> classValues = getClassUniqueValuesInColumn(table);
-        if (classValues.size()==1){
-            tree.insertNode(arc,classValues.get(0));
+        if (classValues.size() == 1) {
+            tree.insertNode(arc, classValues.get(0));
             //Classe Encontrada (Criado nó leaf)
-            System.out.println(classValues.get(0)+"(counter"+counter+")");
+            System.out.println(classValues.get(0) + " \t(counter" + counter + ")");
             counter++;
 
-        }else if (remainingAtributes.size()==0){
+        } else if (remainingAtributes.size() == 0) {
             //Classe Encontrada (Criado nó leaf)
             String commonValue = getMostCommonValueInClass(table);
-            tree.insertNode(arc,commonValue);
-            System.out.println(commonValue+" (counter " + counter+")");
+            tree.insertNode(arc, commonValue);
+            System.out.println(commonValue + " \t(counter " + counter + ")");
             counter++;
 
-        }else{
+        } else {
             System.out.println();
             //Classe não encontrada (Criado nó com filhos)
-            int bestAtributeId = DataAnalysis.sortEntropy(DataAnalysis.entropy(table,remainingAtributes))[1];
+            int bestAttributeId = DataAnalysis.sortEntropy(table, DataAnalysis.entropy(table, remainingAtributes))[1];
 
-            Tree.Node n =tree.insertNode(arc,bestAtributeId,0,table);
+            Tree.Node n = tree.insertNode(arc, bestAttributeId, 0, table);
+            System.out.println(tabs + "< " + getColumnName(table, bestAttributeId) + " >");
 
-            System.out.println(tabs + "< " + getColumnName(table, bestAtributeId) + " >");
 
-
-            for (String value : getUniqueValuesInColumn(table, bestAtributeId)) {
+            for (String value : getUniqueValuesInColumn(table, bestAttributeId)) {
                 Tree.Arc selectedArc = n.getArc(value);
-                System.out.print(tabs + "\t" + value + ":");
-                LinkedList<ParserLine> tableWithRestrictions = cutTableBasedOnRestriction(table, bestAtributeId, value);
+                System.out.print(tabs + "\t" + value + ":" + " ");
+                LinkedList<ParserLine> tableWithRestrictions = cutTableBasedOnRestriction(table, bestAttributeId, value);
 
                 if ((tableWithRestrictions.size() - 1) == 0) {
                     //Restrição impossivel (cria nó leaf)
                     String commonValue = getMostCommonValueInClass(table);
-                    tree.insertNode(selectedArc,commonValue);
-                    System.out.println(commonValue+" (counter " + counter+")");
+                    tree.insertNode(selectedArc, commonValue);
+                    System.out.println(commonValue + " \t(counter " + counter + ")");
                     counter++;
 
                 } else {
                     //Prossegue a criação da arvore através do arco
                     LinkedList<String> newAtrib = new LinkedList<>(remainingAtributes);
-                    newAtrib.remove(getColumnName(table,bestAtributeId));
-                    buildDecisionTree(tableWithRestrictions, newAtrib, depth + 2,selectedArc);
+                    newAtrib.remove(getColumnName(table, bestAttributeId));
+                    buildDecisionTree(tableWithRestrictions, newAtrib, depth + 2, selectedArc);
                 }
             }
         }

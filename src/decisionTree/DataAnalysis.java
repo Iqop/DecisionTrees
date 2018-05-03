@@ -39,12 +39,11 @@ class DataAnalysis {
             entropy[i] = entropyValueForColumn;
         }
 
-        for (int i=1;i<numberOfColumns-1;i++){
-            if (!availableAtributes.contains(getColumnName(table,i))){
-                entropy[i]=Double.MAX_VALUE;
+        for (int i = 1; i < numberOfColumns - 1; i++) {
+            if (!availableAtributes.contains(getColumnName(table, i))) {
+                entropy[i] = Double.MAX_VALUE;
             }
         }
-
 
 
         return entropy;
@@ -52,7 +51,7 @@ class DataAnalysis {
 
 
     /* ordenação ascendente do vetor por entropia */
-    static int[] sortEntropy(double[] array) {
+    static int[] sortEntropy(LinkedList<ParserLine> table, double[] array) {
         int[] idSorted = new int[array.length];
 
         for (int i = 0; i < idSorted.length; i++) {
@@ -71,10 +70,20 @@ class DataAnalysis {
                     int temp2 = idSorted[j];
                     idSorted[j] = idSorted[j + 1];
                     idSorted[j + 1] = temp2;
+
+                } else if (array[j] == array[j + 1]) {
+                    if (getUniqueValuesInColumn(table, j).size() > getUniqueValuesInColumn(table, j + 1).size()) {
+                        double temp = array[j];
+                        array[j] = array[j + 1];
+                        array[j + 1] = temp;
+
+                        int temp2 = idSorted[j];
+                        idSorted[j] = idSorted[j + 1];
+                        idSorted[j + 1] = temp2;
+                    }
                 }
             }
         }
-
         return idSorted;
     }
 
