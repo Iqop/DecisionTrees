@@ -64,7 +64,9 @@ public class TableUtils {
     public static LinkedList<String> getUniqueValuesInColumn(LinkedList<ParserLine> table, int index) {
         Set<String> toRet = new HashSet<>(getColumn(table, index));
         toRet.remove(getColumnName(table, index));
-        return new LinkedList<>(toRet);
+        LinkedList<String> list = new LinkedList<>(toRet);
+        Collections.sort(list);
+        return list;
     }
 
     public static LinkedList<ParserLine> cutTableBasedOnRestriction(LinkedList<ParserLine> table, String atribute, String atributeValue) {
@@ -111,4 +113,12 @@ public class TableUtils {
         return maxId;
     }
 
+    public static int getAttributeId(LinkedList<ParserLine> table,String atribute){
+        LinkedList<String> titles = table.get(0).getAll();
+        for(int i=0;i<titles.size();i++){
+            if (titles.get(i).equals(atribute))
+                return i;
+        }
+        return -1;
+    }
 }

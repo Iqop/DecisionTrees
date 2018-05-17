@@ -4,7 +4,9 @@ package decisionTree;
 import parser.ParserLine;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import static utils.TableUtils.getColumnName;
 import static utils.TableUtils.getUniqueValuesInColumn;
@@ -33,16 +35,18 @@ class Tree implements Serializable {
         String classification;
         Node father;
         LinkedList<Arc> children;
+        LinkedList<String> attributeOptions;
         int depth;
 
-        Node(String nameOfAttribute, Node dad, int depth, int column, LinkedList<ParserLine> table) {
+        Node(String nameOfAttribute, Node dad, int depth, int column, LinkedList<ParserLine> table,LinkedList<String> options) {
             this.nameOfAttribute = nameOfAttribute;
             this.father = dad;
             this.children = new LinkedList<>();
             this.depth = depth;
+            attributeOptions = new LinkedList<>(options);
 
-            LinkedList<String> l = getUniqueValuesInColumn(table, column);
-            for (String s : l) {
+
+            for (String s : options) {
                 Arc a = new Arc(s, this);
                 children.addLast(a);
             }
@@ -60,6 +64,9 @@ class Tree implements Serializable {
         Node(String classification, Node origin) {
             this.classification = classification;
             this.father = origin;
+        }
+        public LinkedList<String> getAttributeOptions(){
+            return attributeOptions;
         }
 
         public String getNameOfAttribute() {
@@ -82,19 +89,20 @@ class Tree implements Serializable {
     Node treeOrigin;
     int size;
     LinkedList<String> attributes;
-
-    Tree(LinkedList<String> attributes) {
+    Map<String,LinkedList<String>> attributeOptions;
+    Tree(LinkedList<String> attributes,Map<String,LinkedList<String>> opt) {
         treeOrigin = null;
         this.attributes = new LinkedList<>(attributes);
+        this.attributeOptions = new HashMap<>(opt);
     }
 
     Node insertNode(Arc endArc, int columnId, int depth, LinkedList<ParserLine> table) {
         Node n;
         if (treeOrigin == null) {
-            treeOrigin = new Node(getColumnName(table, columnId), null, depth, columnId, table);
+            treeOrigin = new Node(getColumnName(table, columnId), null, depth, columnId, table,attributeOptions.get(getColumnName(table,columnId)));
             n = treeOrigin;
         } else {
-            endArc.end = new Node(getColumnName(table, columnId), endArc.origin, depth, columnId, table);
+            endArc.end = new Node(getColumnName(table, columnId), endArc.origin, depth, columnId, table,attributeOptions.get(getColumnName(table,columnId)));
             n = endArc.end;
         }
         return n;
