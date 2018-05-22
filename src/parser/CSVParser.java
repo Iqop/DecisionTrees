@@ -22,7 +22,7 @@ public class CSVParser {
             LinkedList<String> columnData = getColumn(table,columnId);
             double maxValue = getMax(columnData);
             double minValue = getMin(columnData);
-            int numberOfIntervals = calcSturges(columnData.size());
+            int numberOfIntervals = calcSturges(columnData.size())+1;
             double valuesInsideInterval = ((maxValue - minValue)/numberOfIntervals);
 
             for(int i=1;i<table.size();i++){

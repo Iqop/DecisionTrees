@@ -45,7 +45,7 @@ class DataAnalysis {
             }
         }
 
-
+        entropy[0]=-1;
         return entropy;
     }
 
