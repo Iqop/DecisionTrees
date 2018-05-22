@@ -26,9 +26,10 @@ public class DecisionTreeBuilder {
             return;
         }
         System.out.println("File successfully loaded");
+        System.out.println("Printing table, now its numerical values inside classes");
+        System.out.println(table.toString());
 
-
-        System.out.println("Building the decision tree");
+        System.out.println("\n\nBuilding the decision tree");
 
         LinkedList<String> atributes = new LinkedList<>(table.get(0).getAll());
         atributes.remove(0);
