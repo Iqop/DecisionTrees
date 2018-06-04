@@ -48,7 +48,7 @@ public class TableUtils {
         return table.get(0).get(index);
     }
 
-    private static int getColumnFromName(LinkedList<ParserLine> table, String name) {
+    public static int getColumnFromName(LinkedList<ParserLine> table, String name) {
         for (int i = 0; i < table.get(0).size(); i++) {
             if (table.get(0).get(i).equals(name)) {
                 return i;
@@ -113,9 +113,9 @@ public class TableUtils {
         return maxId;
     }
 
-    public static int getAttributeId(LinkedList<ParserLine> table,String atribute){
+    public static int getAttributeId(LinkedList<ParserLine> table, String atribute) {
         LinkedList<String> titles = table.get(0).getAll();
-        for(int i=0;i<titles.size();i++){
+        for (int i = 0; i < titles.size(); i++) {
             if (titles.get(i).equals(atribute))
                 return i;
         }
