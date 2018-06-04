@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import static utils.TableUtils.getColumnName;
-import static utils.TableUtils.getUniqueValuesInColumn;
 
 
 class Tree implements Serializable {
@@ -38,7 +37,7 @@ class Tree implements Serializable {
         LinkedList<String> attributeOptions;
         int depth;
 
-        Node(String nameOfAttribute, Node dad, int depth, int column, LinkedList<ParserLine> table,LinkedList<String> options) {
+        Node(String nameOfAttribute, Node dad, int depth, int column, LinkedList<ParserLine> table, LinkedList<String> options) {
             this.nameOfAttribute = nameOfAttribute;
             this.father = dad;
             this.children = new LinkedList<>();
@@ -65,7 +64,8 @@ class Tree implements Serializable {
             this.classification = classification;
             this.father = origin;
         }
-        public LinkedList<String> getAttributeOptions(){
+
+        LinkedList<String> getAttributeOptions() {
             return attributeOptions;
         }
 
@@ -89,8 +89,9 @@ class Tree implements Serializable {
     Node treeOrigin;
     int size;
     LinkedList<String> attributes;
-    Map<String,LinkedList<String>> attributeOptions;
-    Tree(LinkedList<String> attributes,Map<String,LinkedList<String>> opt) {
+    private Map<String, LinkedList<String>> attributeOptions;
+
+    Tree(LinkedList<String> attributes, Map<String, LinkedList<String>> opt) {
         treeOrigin = null;
         this.attributes = new LinkedList<>(attributes);
         this.attributeOptions = new HashMap<>(opt);
@@ -99,10 +100,10 @@ class Tree implements Serializable {
     Node insertNode(Arc endArc, int columnId, int depth, LinkedList<ParserLine> table) {
         Node n;
         if (treeOrigin == null) {
-            treeOrigin = new Node(getColumnName(table, columnId), null, depth, columnId, table,attributeOptions.get(getColumnName(table,columnId)));
+            treeOrigin = new Node(getColumnName(table, columnId), null, depth, columnId, table, attributeOptions.get(getColumnName(table, columnId)));
             n = treeOrigin;
         } else {
-            endArc.end = new Node(getColumnName(table, columnId), endArc.origin, depth, columnId, table,attributeOptions.get(getColumnName(table,columnId)));
+            endArc.end = new Node(getColumnName(table, columnId), endArc.origin, depth, columnId, table, attributeOptions.get(getColumnName(table, columnId)));
             n = endArc.end;
         }
         return n;

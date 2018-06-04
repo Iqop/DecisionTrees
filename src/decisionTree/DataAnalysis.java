@@ -25,15 +25,15 @@ class DataAnalysis {
             for (String uniqueValueInColumn : uniqueValuesInColumn) {
 
                 LinkedList<ParserLine> tableWithIRest = new LinkedList<>(cutTableBasedOnRestriction(table, i, uniqueValueInColumn));
-                double possiveis = tableWithIRest.size() - 1;
+                double possibleOutcomes = tableWithIRest.size() - 1;
                 double innerEntropy = 0;
                 for (String uniqueClassValue : uniqueValuesInClass) {
-                    double favoraveis = new LinkedList<>(cutTableBasedOnRestriction(tableWithIRest, getClassColumnPosition(table), uniqueClassValue)).size() - 1;
-                    if (favoraveis != 0) {
-                        innerEntropy += (favoraveis / possiveis) * (Math.log(favoraveis / possiveis) / Math.log(2.0));
+                    double favourableOutcomes = new LinkedList<>(cutTableBasedOnRestriction(tableWithIRest, getClassColumnPosition(table), uniqueClassValue)).size() - 1;
+                    if (favourableOutcomes != 0) {
+                        innerEntropy += (favourableOutcomes / possibleOutcomes) * (Math.log(favourableOutcomes / possibleOutcomes) / Math.log(2.0));
                     }
                 }
-                entropyValueForColumn += Math.abs((possiveis / columnSize) * innerEntropy);
+                entropyValueForColumn += Math.abs((possibleOutcomes / columnSize) * innerEntropy);
             }
 
             entropy[i] = entropyValueForColumn;
@@ -45,7 +45,7 @@ class DataAnalysis {
             }
         }
 
-        entropy[0]=-1;
+        entropy[0] = -1;
         return entropy;
     }
 
